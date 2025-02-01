@@ -48,11 +48,21 @@ export const KeyMetrics = () => {
           key={card.title}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          whileHover={{
+            scale: 1.05,
+            rotateY: 10,
+            transition: { duration: 0.3 },
+          }}
           transition={{ delay: index * 0.1 }}
-          className={`${card.color} rounded-lg p-4 text-white shadow-lg backdrop-blur-sm border`}
+          className={`${card.color} rounded-lg p-4 text-white shadow-lg backdrop-blur-sm border transform perspective-1000`}
         >
-          <h3 className="text-sm font-medium opacity-80">{card.title}</h3>
-          <p className="text-2xl font-bold mt-2">{card.value}</p>
+          <motion.div
+            whileHover={{ rotateX: 10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <h3 className="text-sm font-medium opacity-80">{card.title}</h3>
+            <p className="text-2xl font-bold mt-2">{card.value}</p>
+          </motion.div>
         </motion.div>
       ))}
     </div>
