@@ -13,6 +13,7 @@ import { AdvancedFilters } from "./AdvancedFilters";
 import { ExportButton } from "./ExportButton";
 import { TopSongsChart } from "./charts/TopSongsChart";
 import { generateMockStreams } from "@/utils/mockData";
+import { SettingsPanel } from "./SettingsPanel";
 
 export const DashboardLayout = () => {
   const { scrollY } = useScroll();
@@ -57,6 +58,7 @@ export const DashboardLayout = () => {
               <DateRangePicker />
               <AdvancedFilters />
               <ExportButton data={streams} filename="music-analytics" />
+              <SettingsPanel />
             </div>
           </div>
 
