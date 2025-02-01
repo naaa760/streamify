@@ -12,20 +12,13 @@ import { DateRangePicker } from "./DateRangePicker";
 import { AdvancedFilters } from "./AdvancedFilters";
 import { ExportButton } from "./ExportButton";
 import { TopSongsChart } from "./charts/TopSongsChart";
+import { generateMockStreams } from "@/utils/mockData";
 
 export const DashboardLayout = () => {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 200], [0, 1]);
   const scale = useTransform(scrollY, [0, 200], [0.95, 1]);
-  const streams = useMemo(() => {
-    // Mock data generation
-    return Array.from({ length: 100 }, (_, i) => ({
-      id: i,
-      song: `Song ${i}`,
-      streams: Math.floor(Math.random() * 1000000),
-      date: new Date(2023, 0, i + 1).toISOString(),
-    }));
-  }, []);
+  const streams = useMemo(() => generateMockStreams(100), []);
 
   // Add gradient transition based on scroll
   const gradientOpacity = useTransform(scrollY, [0, 300], [0, 1]);

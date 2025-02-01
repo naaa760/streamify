@@ -21,7 +21,7 @@ export const RevenueChart = () => {
 
   const handleClick = (entry: any) => {
     dispatch({
-      type: "SET_REVENUE_SECTOR",
+      type: "SET_FILTERS",
       payload: entry.name,
     });
   };

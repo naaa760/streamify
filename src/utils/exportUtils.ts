@@ -1,4 +1,5 @@
 import { Stream } from "@/types";
+import { formatDate } from "@/utils/formatters";
 
 export const exportToCSV = (data: Stream[], filename: string) => {
   const headers = [
@@ -17,10 +18,10 @@ export const exportToCSV = (data: Stream[], filename: string) => {
       [
         `"${item.songName}"`,
         `"${item.artist}"`,
-        new Date(item.streamedAt).toISOString(),
+        `"${formatDate(item.streamedAt)}"`,
         item.streams,
         item.userId,
-        item.revenue,
+        item.revenue.toFixed(2),
         `"${item.revenueSource}"`,
       ].join(",")
     ),

@@ -2,22 +2,31 @@ import { faker } from "@faker-js/faker";
 import { Stream, KeyMetric, TopSong, RevenueSource } from "@/types";
 
 export const generateMockStreams = (count = 100): Stream[] => {
-  return Array.from({ length: count }, () => ({
-    id: faker.string.uuid(),
-    songName: faker.music.songName(),
-    artist: faker.person.fullName(),
-    streamedAt: faker.date.recent({ days: 30 }),
-    streams: faker.number.int({ min: 1000, max: 1000000 }),
-    userId: faker.string.uuid(),
-    revenue: faker.number.float({ min: 0.1, max: 10, precision: 0.01 }),
-    revenueSource: faker.helpers.arrayElement([
-      "Subscriptions",
-      "Ads",
-      "Downloads",
-      "Licensing",
-      "Merchandise",
-    ]),
-  }));
+  // Create a date range for the last 30 days
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(endDate.getDate() - 30);
+
+  return Array.from({ length: count }, () => {
+    const streamedAt = faker.date.between({ from: startDate, to: endDate });
+
+    return {
+      id: faker.string.uuid(),
+      songName: faker.music.songName(),
+      artist: faker.person.fullName(),
+      streamedAt, // Use the generated date
+      streams: faker.number.int({ min: 1000, max: 1000000 }),
+      userId: faker.string.uuid(),
+      revenue: faker.number.float({ min: 0.1, max: 10, fractionDigits: 2 }),
+      revenueSource: faker.helpers.arrayElement([
+        "Subscriptions",
+        "Ads",
+        "Downloads",
+        "Licensing",
+        "Merchandise",
+      ]),
+    };
+  });
 };
 
 export const generateKeyMetrics = (): KeyMetric => ({

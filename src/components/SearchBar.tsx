@@ -13,7 +13,7 @@ export const SearchBar = () => {
     dispatch({
       type: "SET_FILTERS",
       payload: {
-        searchTerm: term,
+        songName: term,
       },
     });
   }, 300);
