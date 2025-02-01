@@ -1,20 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { KeyMetrics } from "./KeyMetrics";
 import { UserGrowthChart } from "./charts/UserGrowthChart";
 import { RevenueChart } from "./charts/RevenueChart";
 import { AnalyticsDemo } from "./AnalyticsDemo";
 import { DashboardStars } from "./DashboardStars";
-import { motion } from "framer-motion";
 
 export const DashboardLayout = () => {
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 200], [0, 1]);
+  const scale = useTransform(scrollY, [0, 200], [0.95, 1]);
+
   return (
     <div className="relative w-full min-h-screen bg-black">
       <DashboardStars />
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        style={{ opacity, scale }}
         className="relative z-10 w-full py-16"
       >
         <div className="container mx-auto px-4">
@@ -28,19 +31,53 @@ export const DashboardLayout = () => {
             Music Analytics Dashboard
           </motion.h1>
 
-          {/* Key Metrics */}
-          <KeyMetrics />
+          {/* Stagger children animations */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.2,
+                },
+              },
+            }}
+          >
+            {/* Key Metrics */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+            >
+              <KeyMetrics />
+            </motion.div>
 
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-            <UserGrowthChart />
-            <RevenueChart />
-          </div>
+            {/* Charts Grid */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8"
+            >
+              <UserGrowthChart />
+              <RevenueChart />
+            </motion.div>
 
-          {/* Analytics Demo */}
-          <div className="mt-8">
-            <AnalyticsDemo />
-          </div>
+            {/* Analytics Demo */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="mt-8"
+            >
+              <AnalyticsDemo />
+            </motion.div>
+          </motion.div>
         </div>
       </motion.div>
     </div>
