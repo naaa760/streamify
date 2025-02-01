@@ -1,17 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { KeyMetrics } from "./KeyMetrics";
 import { UserGrowthChart } from "./charts/UserGrowthChart";
 import { RevenueChart } from "./charts/RevenueChart";
 import { AnalyticsDemo } from "./AnalyticsDemo";
 import { DashboardStars } from "./DashboardStars";
+import { DataTable } from "./DataTable";
+import { DateRangePicker } from "./DateRangePicker";
+import { AdvancedFilters } from "./AdvancedFilters";
+import { ExportButton } from "./ExportButton";
+import { TopSongsChart } from "./charts/TopSongsChart";
 
 export const DashboardLayout = () => {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 200], [0, 1]);
   const scale = useTransform(scrollY, [0, 200], [0.95, 1]);
+  const streams = useMemo(() => {
+    // Mock data generation
+    return Array.from({ length: 100 }, (_, i) => ({
+      id: i,
+      song: `Song ${i}`,
+      streams: Math.floor(Math.random() * 1000000),
+      date: new Date(2023, 0, i + 1).toISOString(),
+    }));
+  }, []);
 
   // Add gradient transition based on scroll
   const gradientOpacity = useTransform(scrollY, [0, 300], [0, 1]);
@@ -34,62 +48,67 @@ export const DashboardLayout = () => {
         className="relative z-10 w-full py-16"
       >
         <div className="container mx-auto px-4">
-          <motion.h1
-            whileHover={{
-              scale: 1.05,
-              transition: { duration: 0.2 },
-            }}
-            className="text-3xl font-bold text-white mb-8 bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300 inline-block cursor-default"
-          >
-            Music Analytics Dashboard
-          </motion.h1>
+          {/* Header with Filters */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+            <motion.h1
+              whileHover={{
+                scale: 1.05,
+                transition: { duration: 0.2 },
+              }}
+              className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-300 inline-block cursor-default"
+            >
+              Music Analytics Dashboard
+            </motion.h1>
 
-          {/* Stagger children animations */}
+            <div className="flex items-center gap-4">
+              <DateRangePicker />
+              <AdvancedFilters />
+              <ExportButton data={streams} filename="music-analytics" />
+            </div>
+          </div>
+
+          {/* Key Metrics */}
           <motion.div
-            initial="hidden"
-            animate="visible"
             variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.2,
-                },
-              },
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
             }}
           >
-            {/* Key Metrics */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-            >
-              <KeyMetrics />
-            </motion.div>
+            <KeyMetrics />
+          </motion.div>
 
-            {/* Charts Grid */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8"
-            >
-              <UserGrowthChart />
-              <RevenueChart />
-            </motion.div>
+          {/* Charts Grid */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8"
+          >
+            <UserGrowthChart />
+            <RevenueChart />
+          </motion.div>
 
-            {/* Analytics Demo */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="mt-8"
-            >
-              <AnalyticsDemo />
-            </motion.div>
+          {/* Top Songs Chart */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="mt-8"
+          >
+            <TopSongsChart />
+          </motion.div>
+
+          {/* Data Table */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="mt-8"
+          >
+            <DataTable />
           </motion.div>
         </div>
       </motion.div>
