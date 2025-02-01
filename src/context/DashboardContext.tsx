@@ -3,75 +3,64 @@
 import { createContext, useContext, useReducer, ReactNode } from "react";
 
 interface DashboardState {
-  sortBy: string;
-  sortDirection: "asc" | "desc";
+  dateRange: { start: Date; end: Date };
   filters: {
     artist: string;
     songName: string;
-    dateRange: [Date | null, Date | null];
+    revenueSource: string;
   };
-  selectedRevenueSector: string | null;
-  timeRange: "1w" | "1m" | "3m" | "6m" | "1y" | "all";
+  sortBy: {
+    column: string;
+    direction: "asc" | "desc";
+  };
 }
 
-type DashboardAction =
-  | { type: "SET_SORT"; payload: { column: string; direction: "asc" | "desc" } }
-  | { type: "SET_FILTER"; payload: { key: string; value: any } }
-  | { type: "SET_REVENUE_SECTOR"; payload: string | null }
-  | { type: "SET_TIME_RANGE"; payload: DashboardState["timeRange"] };
+type Action =
+  | { type: "SET_DATE_RANGE"; payload: { start: Date; end: Date } }
+  | { type: "SET_FILTERS"; payload: Partial<DashboardState["filters"]> }
+  | { type: "SET_SORT"; payload: DashboardState["sortBy"] }
+  | { type: "RESET_FILTERS" };
 
 const initialState: DashboardState = {
-  sortBy: "streams",
-  sortDirection: "desc",
+  dateRange: {
+    start: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    end: new Date(),
+  },
   filters: {
     artist: "",
     songName: "",
-    dateRange: [null, null],
+    revenueSource: "",
   },
-  selectedRevenueSector: null,
-  timeRange: "1m",
+  sortBy: {
+    column: "streams",
+    direction: "desc",
+  },
+};
+
+const dashboardReducer = (
+  state: DashboardState,
+  action: Action
+): DashboardState => {
+  switch (action.type) {
+    case "SET_DATE_RANGE":
+      return { ...state, dateRange: action.payload };
+    case "SET_FILTERS":
+      return { ...state, filters: { ...state.filters, ...action.payload } };
+    case "SET_SORT":
+      return { ...state, sortBy: action.payload };
+    case "RESET_FILTERS":
+      return { ...state, filters: initialState.filters };
+    default:
+      return state;
+  }
 };
 
 const DashboardContext = createContext<{
   state: DashboardState;
-  dispatch: React.Dispatch<DashboardAction>;
+  dispatch: React.Dispatch<Action>;
 } | null>(null);
 
-function dashboardReducer(
-  state: DashboardState,
-  action: DashboardAction
-): DashboardState {
-  switch (action.type) {
-    case "SET_SORT":
-      return {
-        ...state,
-        sortBy: action.payload.column,
-        sortDirection: action.payload.direction,
-      };
-    case "SET_FILTER":
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          [action.payload.key]: action.payload.value,
-        },
-      };
-    case "SET_REVENUE_SECTOR":
-      return {
-        ...state,
-        selectedRevenueSector: action.payload,
-      };
-    case "SET_TIME_RANGE":
-      return {
-        ...state,
-        timeRange: action.payload,
-      };
-    default:
-      return state;
-  }
-}
-
-export function DashboardProvider({ children }: { children: ReactNode }) {
+export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
   return (
@@ -79,12 +68,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       {children}
     </DashboardContext.Provider>
   );
-}
+};
 
-export function useDashboard() {
+export const useDashboard = () => {
   const context = useContext(DashboardContext);
   if (!context) {
     throw new Error("useDashboard must be used within a DashboardProvider");
   }
   return context;
-}
+};

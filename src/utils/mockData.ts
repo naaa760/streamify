@@ -1,59 +1,52 @@
 import { faker } from "@faker-js/faker";
+import { Stream, KeyMetric, TopSong, RevenueSource } from "@/types";
 
-export interface Stream {
-  id: string;
-  songName: string;
-  artist: string;
-  userId: string;
-  streamedAt: Date;
-  duration: number;
-}
-
-export interface Revenue {
-  source: string;
-  amount: number;
-  percentage: number;
-}
-
-export function generateMockStreams(count: number): Stream[] {
+export const generateMockStreams = (count = 100): Stream[] => {
   return Array.from({ length: count }, () => ({
     id: faker.string.uuid(),
     songName: faker.music.songName(),
     artist: faker.person.fullName(),
-    userId: faker.string.uuid(),
     streamedAt: faker.date.recent({ days: 30 }),
-    duration: faker.number.int({ min: 120, max: 300 }),
+    streams: faker.number.int({ min: 1000, max: 1000000 }),
+    userId: faker.string.uuid(),
+    revenue: faker.number.float({ min: 0.1, max: 10, precision: 0.01 }),
+    revenueSource: faker.helpers.arrayElement([
+      "Subscriptions",
+      "Ads",
+      "Downloads",
+      "Licensing",
+      "Merchandise",
+    ]),
   }));
-}
+};
 
-export function generateMockRevenue(): Revenue[] {
+export const generateKeyMetrics = (): KeyMetric => ({
+  totalUsers: faker.number.int({ min: 100000, max: 1000000 }),
+  activeUsers: faker.number.int({ min: 50000, max: 200000 }),
+  totalStreams: faker.number.int({ min: 1000000, max: 10000000 }),
+  revenue: faker.number.int({ min: 500000, max: 2000000 }),
+  topArtist: faker.person.fullName(),
+});
+
+export const generateTopSongs = (count = 5): TopSong[] => {
+  return Array.from({ length: count }, () => ({
+    songName: faker.music.songName(),
+    artist: faker.person.fullName(),
+    streams: faker.number.int({ min: 100000, max: 1000000 }),
+    revenue: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
+  }));
+};
+
+export const generateMockRevenue = (): RevenueSource[] => {
   const sources = [
-    "Premium Subscriptions",
+    "Subscriptions",
     "Ads",
     "Downloads",
+    "Licensing",
     "Merchandise",
-    "Live Events",
   ];
-  let total = 0;
-  const revenues = sources.map((source) => ({
+  return sources.map((source) => ({
     source,
-    amount: faker.number.int({ min: 10000, max: 100000 }),
-    percentage: 0,
+    amount: faker.number.int({ min: 50000, max: 500000 }),
   }));
-
-  total = revenues.reduce((acc, curr) => acc + curr.amount, 0);
-  return revenues.map((rev) => ({
-    ...rev,
-    percentage: Number(((rev.amount / total) * 100).toFixed(2)),
-  }));
-}
-
-export function generateKeyMetrics() {
-  return {
-    totalUsers: faker.number.int({ min: 100000, max: 1000000 }),
-    activeUsers: faker.number.int({ min: 50000, max: 200000 }),
-    totalStreams: faker.number.int({ min: 1000000, max: 5000000 }),
-    revenue: faker.number.int({ min: 500000, max: 2000000 }),
-    topArtist: faker.person.fullName(),
-  };
-}
+};
