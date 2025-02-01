@@ -12,24 +12,33 @@ export const KeyMetrics = () => {
     {
       title: "Total Users",
       value: formatNumber(metrics.totalUsers),
-      color: "bg-blue-500",
+      color:
+        "bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30",
     },
     {
       title: "Active Users",
       value: formatNumber(metrics.activeUsers),
-      color: "bg-green-500",
+      color:
+        "bg-gradient-to-br from-green-500/20 to-green-600/20 border-green-500/30",
     },
     {
       title: "Total Streams",
       value: formatNumber(metrics.totalStreams),
-      color: "bg-purple-500",
+      color:
+        "bg-gradient-to-br from-purple-500/20 to-purple-600/20 border-purple-500/30",
     },
     {
       title: "Revenue",
       value: `$${formatNumber(metrics.revenue)}`,
-      color: "bg-yellow-500",
+      color:
+        "bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 border-yellow-500/30",
     },
-    { title: "Top Artist", value: metrics.topArtist, color: "bg-pink-500" },
+    {
+      title: "Top Artist",
+      value: metrics.topArtist,
+      color:
+        "bg-gradient-to-br from-pink-500/20 to-pink-600/20 border-pink-500/30",
+    },
   ];
 
   return (
@@ -40,7 +49,7 @@ export const KeyMetrics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className={`${card.color} rounded-lg p-4 text-white shadow-lg`}
+          className={`${card.color} rounded-lg p-4 text-white shadow-lg backdrop-blur-sm border`}
         >
           <h3 className="text-sm font-medium opacity-80">{card.title}</h3>
           <p className="text-2xl font-bold mt-2">{card.value}</p>
