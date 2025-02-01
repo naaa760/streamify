@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ShopiFrame - Build Shopify stores with Framer",
+  title: "Music streaming analytics turns data into sound decisions.",
   description:
     "Design and publish your e-commerce site in Framer, manage it with Shopify",
 };
