@@ -13,8 +13,21 @@ export const DashboardLayout = () => {
   const opacity = useTransform(scrollY, [0, 200], [0, 1]);
   const scale = useTransform(scrollY, [0, 200], [0.95, 1]);
 
+  // Add gradient transition based on scroll
+  const gradientOpacity = useTransform(scrollY, [0, 300], [0, 1]);
+  const backgroundStyle = {
+    opacity: gradientOpacity,
+    background: "linear-gradient(180deg, #eb5757 0%, rgba(0,0,0,1) 15%)",
+  };
+
   return (
     <div className="relative w-full min-h-screen bg-black">
+      {/* Gradient Overlay */}
+      <motion.div
+        style={backgroundStyle}
+        className="absolute inset-0 pointer-events-none"
+      />
+
       <DashboardStars />
       <motion.div
         style={{ opacity, scale }}

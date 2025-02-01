@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { StarBackground } from "@/components/StarBackground";
@@ -13,6 +18,9 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
+  const { scrollY } = useScroll();
+  const landingOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const dashboardOpacity = useTransform(scrollY, [0, 200], [0, 1]);
 
   // Handle scroll to show dashboard
   useEffect(() => {
@@ -40,7 +48,10 @@ export default function Home() {
     <DashboardProvider>
       <main className="relative">
         {/* Landing Page Section */}
-        <section className="min-h-screen sticky top-0 bg-gradient-to-br from-[#eb5757] to-black flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        <motion.section
+          style={{ opacity: landingOpacity }}
+          className="min-h-screen sticky top-0 bg-gradient-to-br from-[#eb5757] to-black flex flex-col items-center justify-center p-4 relative overflow-hidden"
+        >
           <StarBackground />
           <MobileMenu
             isOpen={isMobileMenuOpen}
@@ -204,10 +215,20 @@ export default function Home() {
               </motion.div>
             </motion.button>
           </div>
-        </section>
+        </motion.section>
+
+        {/* Transition Gradient */}
+        <motion.div
+          style={{
+            opacity: dashboardOpacity,
+            background:
+              "linear-gradient(to bottom, #eb5757, rgba(0,0,0,0.8) 50%, transparent)",
+          }}
+          className="fixed inset-0 pointer-events-none z-[1]"
+        />
 
         {/* Dashboard Section */}
-        <section className="relative min-h-screen bg-gradient-to-br from-[#eb5757] to-black">
+        <section className="relative min-h-screen bg-black">
           <AnimatePresence>
             {showDashboard && (
               <motion.div
