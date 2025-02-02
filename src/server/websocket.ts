@@ -1,4 +1,4 @@
-import { WebSocket, Server } from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 
 interface StreamUpdate {
   type: "stream_update";
@@ -9,7 +9,7 @@ interface StreamUpdate {
   };
 }
 
-const wss = new Server({ port: 3001 });
+const wss = new WebSocketServer({ port: 3001 });
 
 wss.on("connection", (ws: WebSocket) => {
   console.log("Client connected");
