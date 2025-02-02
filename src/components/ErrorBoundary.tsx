@@ -2,38 +2,40 @@
 
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface Props {
   error: Error;
   reset: () => void;
+  section?: string;
 }
 
-export const ErrorBoundary = ({ error, reset }: Props) => {
+export const ErrorBoundary = ({
+  error,
+  reset,
+  section = "component",
+}: Props) => {
+  const { trackError } = useAnalytics();
+
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error("Dashboard Error:", error);
-  }, [error]);
+    trackError(error, `Error in ${section}`);
+  }, [error, section, trackError]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-[400px] flex items-center justify-center"
+      className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg"
     >
-      <div className="text-center p-6 bg-black/40 backdrop-blur-sm rounded-xl border border-gray-800">
-        <h2 className="text-2xl font-bold text-white mb-4">
-          Something went wrong
-        </h2>
-        <p className="text-gray-400 mb-6">{error.message}</p>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={reset}
-          className="bg-[#eb5757] text-white px-6 py-3 rounded-lg hover:bg-opacity-90 transition-colors"
-        >
-          Try again
-        </motion.button>
-      </div>
+      <p className="text-red-400 mb-4">
+        Error loading {section}: {error.message}
+      </p>
+      <button
+        onClick={reset}
+        className="bg-red-500/20 text-red-400 px-4 py-2 rounded-lg hover:bg-red-500/30 transition-colors"
+      >
+        Try Again
+      </button>
     </motion.div>
   );
 };

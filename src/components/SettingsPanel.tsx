@@ -3,17 +3,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePreferences } from "@/stores/usePreferences";
+import { useTheme } from "@/providers/ThemeProvider";
 
 export const SettingsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    theme,
-    chartStyle,
-    tableRows,
-    setTheme,
-    setChartStyle,
-    setTableRows,
-  } = usePreferences();
+  const { theme, toggleTheme } = useTheme();
+  const { chartStyle, tableRows, setChartStyle, setTableRows } =
+    usePreferences();
 
   return (
     <div className="relative">
@@ -60,14 +56,12 @@ export const SettingsPanel = () => {
                 <label className="block text-sm text-gray-400 mb-2">
                   Theme
                 </label>
-                <select
-                  value={theme}
-                  onChange={(e) => setTheme(e.target.value as "dark" | "light")}
-                  className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-white"
+                <button
+                  onClick={toggleTheme}
+                  className="w-full bg-black/50 border border-gray-700 rounded-lg px-3 py-2 text-white text-left"
                 >
-                  <option value="dark">Dark</option>
-                  <option value="light">Light</option>
-                </select>
+                  {theme === "dark" ? "Dark Theme" : "Light Theme"}
+                </button>
               </div>
 
               <div>
