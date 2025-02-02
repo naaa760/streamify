@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { MusicProvider } from "@/context/MusicContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +19,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className={`${inter.className} pb-24`}>
+        <MusicProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </MusicProvider>
       </body>
     </html>
   );
