@@ -1,4 +1,10 @@
-type EventType = "page_view" | "interaction" | "error" | "export" | "filter";
+type EventType =
+  | "page_view"
+  | "interaction"
+  | "error"
+  | "export"
+  | "filter"
+  | "performance";
 
 interface AnalyticsEvent {
   type: EventType;

@@ -1,40 +1,36 @@
 import { Stream } from "@/types";
-import { formatDate } from "@/utils/formatters";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 export const exportToCSV = (data: Stream[], filename: string) => {
-  const headers = [
-    "Song Name",
-    "Artist",
-    "Date Streamed",
-    "Streams",
-    "User ID",
-    "Revenue",
-    "Revenue Source",
-  ];
-
+  const headers = ["Song Name", "Artist", "Date", "Streams", "Revenue"];
   const csvContent = [
     headers.join(","),
     ...data.map((item) =>
       [
         `"${item.songName}"`,
         `"${item.artist}"`,
-        `"${formatDate(item.streamedAt)}"`,
+        new Date(item.streamedAt).toLocaleDateString(),
         item.streams,
-        item.userId,
-        item.revenue.toFixed(2),
-        `"${item.revenueSource}"`,
+        item.revenue,
       ].join(",")
     ),
   ].join("\n");
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
+  saveAs(blob, `${filename}.csv`);
+};
 
-  link.setAttribute("href", url);
-  link.setAttribute("download", `${filename}.csv`);
-  link.style.visibility = "hidden";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+export const exportToExcel = (data: Stream[], filename: string) => {
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Streams");
+  XLSX.writeFile(wb, `${filename}.xlsx`);
+};
+
+export const exportToJSON = (data: Stream[], filename: string) => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
+  saveAs(blob, `${filename}.json`);
 };

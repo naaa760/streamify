@@ -1,33 +1,57 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
+import { useTheme } from "@/providers/ThemeProvider";
+import { usePreferences } from "@/stores/usePreferences";
 
-type ShortcutHandler = () => void;
+export const useKeyboardShortcuts = () => {
+  const { toggleTheme } = useTheme();
+  const { setTableRows } = usePreferences();
 
-interface ShortcutMap {
-  [key: string]: ShortcutHandler;
-}
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      // Check if target is an input or textarea
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
 
-export const useKeyboardShortcuts = (shortcuts: ShortcutMap) => {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
-      const isCtrlPressed = event.ctrlKey || event.metaKey;
-
-      // Handle Ctrl/Cmd + key combinations
-      if (isCtrlPressed) {
-        const shortcutKey = `ctrl+${key}`;
-        if (shortcuts[shortcutKey]) {
-          event.preventDefault();
-          shortcuts[shortcutKey]();
+      // Ctrl/Cmd + key combinations
+      if (event.ctrlKey || event.metaKey) {
+        switch (event.key.toLowerCase()) {
+          case "d":
+            event.preventDefault();
+            toggleTheme();
+            break;
+          case "e":
+            event.preventDefault();
+            // Trigger export
+            break;
+          default:
+            break;
         }
+        return;
       }
-      // Handle single key shortcuts
-      else if (shortcuts[key]) {
-        event.preventDefault();
-        shortcuts[key]();
-      }
-    };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [shortcuts]);
+      // Single key shortcuts
+      switch (event.key) {
+        case "?":
+          // Show keyboard shortcuts modal
+          break;
+        case "1":
+        case "2":
+        case "3":
+          // Switch between views
+          break;
+        default:
+          break;
+      }
+    },
+    [toggleTheme]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [handleKeyPress]);
 };
